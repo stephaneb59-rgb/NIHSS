@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Calculateur score NIHSS</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root {
+      --bg: #e9edf5;
+      --card: #eef2f9;
+      --text: #0f1218;
+      --muted: #5f6b7a;
+      --accent: #5b8cff;
+      --ok: #19b37a;
+      --warn: #ffb020;
+      --bad: #ff5c7a;
+      --shadow-dark: #b6c0d0;
+      --shadow-light: #ffffff;
+      --radius: 18px;
+      --pad: 16px;
+    }
+    body { margin:0; font-family: sans-serif; background:var(--bg); color:var(--text); }
+    .app { max-width: 600px; margin:0 auto; padding:16px; }
+    .topbar { position:sticky; top:0; padding:12px; background:var(--card); box-shadow:0 2px 6px rgba(0,0,0,.2); display:flex; justify-content:center; }
+    .card { background:var(--card); padding:var(--pad); border-radius:var(--radius); box-shadow:2px 2px 6px var(--shadow-dark), -2px -2px 6px var(--shadow-light); }
+    .card h3 { margin-top:0; }
+    .sub { color:var(--muted); font-size:14px; margin-bottom:10px; }
+    .control { display:flex; flex-direction:column; gap:10px; }
+
+    /* --- Réponses (séparées + état sélectionné visible) --- */
+    .seg {
+      padding:14px;
+      background:var(--bg);
+      border:0;
+      border-bottom:1px solid #ddd;
+      text-align:left;
+      font-size:16px;
+      cursor:pointer;
+    }
+    .seg:last-child { border-bottom:0; }
+    .seg[aria-pressed="true"] {
+      background: var(--accent);
+      color: white;
+      font-weight:bold;
+    }
+
+    /* --- Boutons navigation --- */
+    .card .control:last-child {
+      margin-top:20px;
+    }
+
+    .btn { background:#cccc; padding:12px 16px; border-radius:12px; border:0; cursor:pointer; }
+    .btn.primary { background:var(--accent); color:white; }
+
+    .resultFinal {
+      text-align:center;
+      margin-top:30px;
+      font-size:24px;
+      font-weight:bold;
+    }
+    .fabbar { position:fixed; bottom:0; left:0; right:0; background:var(--bg); padding:10px; display:flex; justify-content:center; gap:12px; }
+    .chip { padding:8px 12px; border-radius:999px; background:var(--card); }
+    .pill { font-weight:bold; }
+    .ok{color:var(--ok);} .warn{color:var(--warn);} .bad{color:var(--bad);}
+  </style>
+</head>
+<body>
+  <div class="topbar"><h1>Calcul NIHSS SB ®</h1></div>
+  <main class="app">
+    <section id="questions"></section>
+    <section id="summary">
+      <strong>Résumé</strong>
+      <div class="sub" id="chosenCount">0/15 éléments renseignés</div>
+    </section>
+    <div id="finalResult" class="resultFinal" style="display:none;"></div>
+  </main>
+  <div class="fabbar">
+    <div class="chip">Score <span id="scoreVal" class="pill">0</span></div>
+    <div class="chip">Gravité <span id="band" class="pill ok">minime</span></div>
+  </div>
+
+<script>
+  const NIHSS = [
+      { id: '1a', label: '1a. Niveau de conscience', desc:'Éveil global', options:[
+        {t:'Vigilant', v:0}, {t:'Somnolent', v:1}, {t:'Obnubilé', v:2}, {t:'Coma', v:3}
+      ]},
+      { id: '1b', label: '1b. Réponses à 2 questions simples', desc:'Mois / âge', options:[
+        {t:'2 réponses correctes', v:0}, {t:'1 réponse correcte', v:1}, {t:'0 réponse correcte', v:2}
+      ]},
+      { id: '1c', label: '1c. Réponses à 2 taches simples', desc:'Ouvrir et fermer les yeux / serrer et relacher la main', options:[
+        {t:'2 tâches correctes', v:0}, {t:'1 tâche correcte', v:1}, {t:'0 tâche correcte', v:2}
+      ]},
+      { id: '2', label: '2. Occulomotricité', desc:'Paires crâniennes III, IV, VI', options:[
+        {t:'Normale', v:0}, {t:'Parésie partielle du regard', v:1}, {t:'Déviation ou parésie totale', v:2}
+      ]},
+      { id: '3', label: '3. Champs visuels', desc:'Hémianopsie', options:[
+        {t:'Normal', v:0}, {t:'Hémianopsie partielle', v:1}, {t:'Hémianopsie complète', v:2}, {t:'Cécité corticale', v:3}
+      ]},
+      { id: '4', label: '4. Atteinte faciale', desc:'dents, yeux, sourcils', options:[
+        {t:'pas d atteinte', v:0}, {t:'Légère', v:1}, {t:'Partielle', v:2}, {t:'Complète', v:3}
+      ]},
+      { id: '5a', label: '5a. Bras gauche', desc:'Maintien 10 s', options:[
+        {t:'Maintenu', v:0}, {t:'Descente <10 s', v:1}, {t:'Descente >10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+      ]},
+      { id: '5b', label: '5b. Bras droit', desc:'Maintien 10 s', options:[
+        {t:'Maintenu', v:0}, {t:'Descente <10 s', v:1}, {t:'Descente >10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+      ]},
+      { id: '6a', label: '6a. Jambe gauche', desc:'Maintien 5 s', options:[
+        {t:'Maintenue', v:0}, {t:'Descente <5 s', v:1}, {t:'Descente >5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+      ]},
+      { id: '6b', label: '6b. Jambe droite', desc:'Maintien 5 s', options:[
+        {t:'Maintenue', v:0}, {t:'Descente <5 s', v:1}, {t:'Descente >5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+      ]},
+      { id: '7', label: '7. Ataxie des membres', desc:'Épreuve doigt-nez / talon-genou', options:[
+        {t:'Absente', v:0}, {t:'1 membre', v:1}, {t:'2 membres', v:2}
+      ]},
+      { id: '8', label: '8. Sensibilité', desc:'Piqûre / toucher', options:[
+        {t:'Normale', v:0}, {t:'Diminution légère', v:1}, {t:'Perte sévère', v:2}
+      ]},
+      { id: '9', label: '9. Langage', desc:'description objets / phrases - Aphasie', options:[
+        {t:'Normale', v:0}, {t:'Légère', v:1}, {t:'Modérée', v:2}, {t:'Sévère / mutique', v:3}
+      ]},
+      { id: '10', label: '10. Dysarthrie', desc:'Articulation et clareté parole - carte de mots', options:[
+        {t:'Normale', v:0}, {t:'Légère', v:1}, {t:'Sévère', v:2}
+      ]},
+      { id: '11', label: '11. Négligeance / Extinction', desc:'toucher yeux fermés - regard nez et mouvements', options:[
+        {t:'Absente', v:0}, {t:'Partielle', v:1}, {t:'Totale', v:2}
+      ]}
+    ];
+
+  let currentIndex=0;
+  const grid=document.getElementById('questions');
+  const finalResult=document.getElementById('finalResult');
+
+  function bandFrom(score){
+    if(score<=4) return {txt:'minime', cls:'ok'};
+    if(score<=15) return {txt:'modéré', cls:'warn'};
+    return {txt:'sévère', cls:'bad'};
+  }
+
+  function renderQuestion(){
+    grid.innerHTML='';
+    finalResult.style.display='none';
+    const q=NIHSS[currentIndex];
+    const card=document.createElement('article'); card.className='card';
+    const h3=document.createElement('h3'); h3.textContent=q.label;
+    const sub=document.createElement('div'); sub.className='sub'; sub.textContent=q.desc;
+    const ctrl=document.createElement('div'); ctrl.className='control';
+
+    q.options.forEach(opt=>{
+      const b=document.createElement('button');
+      b.className='seg'; b.textContent=opt.t; b.setAttribute('aria-pressed','false');
+      b.onclick=()=>{ [...ctrl.children].forEach(ch=>ch.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); q.selected=opt.v; update(); };
+      ctrl.appendChild(b);
+    });
+
+    card.append(h3, sub, ctrl);
+
+    const nav=document.createElement('div'); nav.className='control';
+    if(currentIndex>0){
+      const prev=document.createElement('button'); prev.className='btn'; prev.textContent='Précédent';
+      prev.onclick=()=>{currentIndex--; renderQuestion();}; nav.appendChild(prev);
+    }
+    if(currentIndex<NIHSS.length-1){
+      const next=document.createElement('button'); next.className='btn primary'; next.textContent='Suivant';
+      next.onclick=()=>{currentIndex++; renderQuestion();}; nav.appendChild(next);
+    } else {
+      const endBtn=document.createElement('button'); endBtn.className='btn primary'; endBtn.textContent='Fin';
+      endBtn.onclick=()=>{ showFinal(); };
+      nav.appendChild(endBtn);
+    }
+    card.appendChild(nav);
+
+    grid.appendChild(card);
+  }
+
+  function update(){
+    let score=0, filled=0;
+    NIHSS.forEach(q=>{ if(q.selected!==undefined){ score+=q.selected; filled++; }});
+    document.getElementById('scoreVal').textContent=score;
+    const {txt, cls}=bandFrom(score);
+    const band=document.getElementById('band'); band.textContent=txt; band.className=`pill ${cls}`;
+    document.getElementById('chosenCount').textContent=`${filled}/${NIHSS.length} éléments renseignés`;
+  }
+
+  function showFinal(){
+    let score=0; 
+    NIHSS.forEach(q=>{ if(q.selected!==undefined) score+=q.selected; });
+    const {txt, cls}=bandFrom(score);
+    finalResult.style.display='block';
+    finalResult.innerHTML=`Score total: ${score}<br>Gravité: <span class="${cls}">${txt}</span>`;
+  }
+
+  window.onload=()=>{NIHSS.forEach(q=>delete q.selected); currentIndex=0; renderQuestion(); update();}
+</script>
+
+<!-- Enregistrement du service worker -->
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+  }
+</script>
+
+</body>
+</html>
