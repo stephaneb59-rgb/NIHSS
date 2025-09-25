@@ -1,7 +1,7 @@
 {
   "name": "Calculateur NIHSS",
   "short_name": "NIHSS",
-  "start_url": "Appli NIHSS.html",
+  "start_url": "Index.html",
   "display": "standalone",
   "background_color": "#e9edf5",
   "theme_color": "#5b8cff",
@@ -10,4 +10,5 @@
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
+
 
