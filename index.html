@@ -104,16 +104,16 @@
         {t:'pas d atteinte', v:0}, {t:'Légère', v:1}, {t:'Partielle', v:2}, {t:'Complète', v:3}
       ]},
       { id: '5a', label: '5a. Bras gauche', desc:'Maintien 10 s', options:[
-        {t:'Maintenu', v:0}, {t:'Descente <10 s', v:1}, {t:'Descente >10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+        {t:'Maintenu', v:0}, {t:'Descente >10 s', v:1}, {t:'Descente <10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '5b', label: '5b. Bras droit', desc:'Maintien 10 s', options:[
-        {t:'Maintenu', v:0}, {t:'Descente <10 s', v:1}, {t:'Descente >10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+        {t:'Maintenu', v:0}, {t:'Descente >10 s', v:1}, {t:'Descente <10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '6a', label: '6a. Jambe gauche', desc:'Maintien 5 s', options:[
-        {t:'Maintenue', v:0}, {t:'Descente <5 s', v:1}, {t:'Descente >5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+        {t:'Maintenue', v:0}, {t:'Descente >5 s', v:1}, {t:'Descente <5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '6b', label: '6b. Jambe droite', desc:'Maintien 5 s', options:[
-        {t:'Maintenue', v:0}, {t:'Descente <5 s', v:1}, {t:'Descente >5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+        {t:'Maintenue', v:0}, {t:'Descente >5 s', v:1}, {t:'Descente <5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '7', label: '7. Ataxie des membres', desc:'Épreuve doigt-nez / talon-genou', options:[
         {t:'Absente', v:0}, {t:'1 membre', v:1}, {t:'2 membres', v:2}
@@ -203,30 +203,11 @@
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");
   }
-<button id="installBtn" hidden>📲 Installer NIHSS</button>
-
-<script>
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const installBtn = document.getElementById('installBtn');
-  installBtn.hidden = false;
-
-  installBtn.addEventListener('click', async () => {
-    installBtn.hidden = true;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`Résultat : ${outcome}`);
-    deferredPrompt = null;
-  });
-});
-
 </script>
 
 </body>
 </html>
+
 
 
 
