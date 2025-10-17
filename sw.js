@@ -3,7 +3,7 @@ self.addEventListener("install", e => {
     caches.open("nihss-cache").then(cache => {
       return cache.addAll([
         "./index.html",
-        "/manifest.json"
+        "./manifest.json"
       ]);
     })
   );
@@ -14,6 +14,7 @@ self.addEventListener("fetch", e => {
     caches.match(e.request).then(response => response || fetch(e.request))
   );
 });
+
 
 
 
