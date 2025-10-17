@@ -2,6 +2,7 @@
   "name": "Calculateur NIHSS",
   "short_name": "NIHSS",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#e9edf5",
   "theme_color": "#5b8cff",
@@ -18,7 +19,4 @@
     }
   ]
 }
-
-
-
 
