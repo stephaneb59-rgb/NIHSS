@@ -4,8 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Calculateur score NIHSS</title>
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#5b8cff">
+  <link rel="manifest" href="manifest.json">
   <style>
     :root {
       --bg: #e9edf5;
@@ -67,13 +66,11 @@
   </style>
 </head>
 <body>
-  <div class="topbar"><h1>Calcul NIHSS <br> <CENTER> S.BRIGE® </CENTER> </h1></div>
+  <div class="topbar"><h1>Calcul NIHSS SB ®</h1></div>
   <main class="app">
     <section id="questions"></section>
     <section id="summary">
-      <br>
       <strong>Résumé</strong>
-       <br>
       <div class="sub" id="chosenCount">0/15 éléments renseignés</div>
     </section>
     <div id="finalResult" class="resultFinal" style="display:none;"></div>
@@ -91,7 +88,7 @@
       { id: '1b', label: '1b. Réponses à 2 questions simples', desc:'Mois / âge', options:[
         {t:'2 réponses correctes', v:0}, {t:'1 réponse correcte', v:1}, {t:'0 réponse correcte', v:2}
       ]},
-      { id: '1c', label: '1c. Réponses à 2 tâches simples', desc:'Ouvrir et fermer les yeux / serrer et relacher la main', options:[
+      { id: '1c', label: '1c. Réponses à 2 taches simples', desc:'Ouvrir et fermer les yeux / serrer et relacher la main', options:[
         {t:'2 tâches correctes', v:0}, {t:'1 tâche correcte', v:1}, {t:'0 tâche correcte', v:2}
       ]},
       { id: '2', label: '2. Occulomotricité', desc:'Paires crâniennes III, IV, VI', options:[
@@ -101,19 +98,19 @@
         {t:'Normal', v:0}, {t:'Hémianopsie partielle', v:1}, {t:'Hémianopsie complète', v:2}, {t:'Cécité corticale', v:3}
       ]},
       { id: '4', label: '4. Atteinte faciale', desc:'dents, yeux, sourcils', options:[
-        {t:'pas d'atteinte', v:0}, {t:'Légère', v:1}, {t:'Partielle', v:2}, {t:'Complète', v:3}
+        {t:'pas d atteinte', v:0}, {t:'Légère', v:1}, {t:'Partielle', v:2}, {t:'Complète', v:3}
       ]},
       { id: '5a', label: '5a. Bras gauche', desc:'Maintien 10 s', options:[
-        {t:'Maintenu', v:0}, {t:'Descente >10 s', v:1}, {t:'Descente <10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+        {t:'Maintenu', v:0}, {t:'Descente <10 s', v:1}, {t:'Descente >10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '5b', label: '5b. Bras droit', desc:'Maintien 10 s', options:[
-        {t:'Maintenu', v:0}, {t:'Descente >10 s', v:1}, {t:'Descente <10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+        {t:'Maintenu', v:0}, {t:'Descente <10 s', v:1}, {t:'Descente >10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '6a', label: '6a. Jambe gauche', desc:'Maintien 5 s', options:[
-        {t:'Maintenue', v:0}, {t:'Descente >5 s', v:1}, {t:'Descente <5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+        {t:'Maintenue', v:0}, {t:'Descente <5 s', v:1}, {t:'Descente >5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '6b', label: '6b. Jambe droite', desc:'Maintien 5 s', options:[
-        {t:'Maintenue', v:0}, {t:'Descente >5 s', v:1}, {t:'Descente <5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
+        {t:'Maintenue', v:0}, {t:'Descente <5 s', v:1}, {t:'Descente >5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '7', label: '7. Ataxie des membres', desc:'Épreuve doigt-nez / talon-genou', options:[
         {t:'Absente', v:0}, {t:'1 membre', v:1}, {t:'2 membres', v:2}
@@ -207,6 +204,7 @@
 
 </body>
 </html>
+
 
 
 
