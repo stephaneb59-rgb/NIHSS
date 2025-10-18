@@ -202,9 +202,44 @@
     navigator.serviceWorker.register("sw.js");
   }
 </script>
+<button id="installBtn" hidden class="install-btn">📲 Installer NIHSS</button>
+
+<script>
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').hidden = false;
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  document.getElementById('installBtn').hidden = true;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log(`Résultat : ${outcome}`);
+  deferredPrompt = null;
+});
+</script>
+
+<style>
+.install-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #5b8cff;
+  color: white;
+  border: none;
+  border-radius: 1em;
+  padding: 12px 20px;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+</style>
 
 </body>
 </html>
+
 
 
 
