@@ -84,7 +84,7 @@
 <script>
   const NIHSS = [
       { id: '1a', label: '1a. Niveau de conscience', desc:'Éveil global', options:[
-        {t:'vigilant', v:0}, {t:'éveillable avec stimulation simple', v:1}, {t:'éveillable avec stimulation soutenue et répétée', v:2}, {t:'coma', v:3}
+        {t:'Vigilant', v:0}, {t:'Éveillable avec stimulation simple', v:1}, {t:'Éveillable avec stimulation soutenue et répétée', v:2}, {t:'coma', v:3}
       ]},
       { id: '1b', label: '1b. Réponses à 2 questions simples', desc:'Mois / âge', options:[
         {t:'2 réponses correctes', v:0}, {t:'1 réponse correcte', v:1}, {t:'0 réponse correcte', v:2}
@@ -93,40 +93,40 @@
         {t:'2 tâches correctes', v:0}, {t:'1 tâche correcte', v:1}, {t:'0 tâche correcte', v:2}
       ]},
       { id: '2', label: '2. Occulomotricité', desc:'Paires crâniennes III, IV, VI', options:[
-        {t:'normale', v:0}, {t:'parésie partielle du regard', v:1}, {t:'déviation ou parésie totale', v:2}
+        {t:'Normale', v:0}, {t:'Parésie partielle du regard', v:1}, {t:'Déviation ou parésie totale', v:2}
       ]},
       { id: '3', label: '3. Champs visuels', desc:'Hémianopsie', options:[
-        {t:'normal', v:0}, {t:'hémianopsie partielle', v:1}, {t:'hémianopsie complète', v:2}, {t:'cécité corticale', v:3}
+        {t:'Normal', v:0}, {t:'Hémianopsie partielle', v:1}, {t:'Hémianopsie complète', v:2}, {t:'Cécité corticale', v:3}
       ]},
       { id: '4', label: '4. Atteinte faciale', desc:'dents, yeux, sourcils', options:[
-        {t:'pas d atteinte', v:0}, {t:'légère', v:1}, {t:'partielle', v:2}, {t:'complète', v:3}
+        {t:'Pas d atteinte', v:0}, {t:'Légère', v:1}, {t:'Partielle', v:2}, {t:'Complète', v:3}
       ]},
       { id: '5a', label: '5a. Bras gauche', desc:'Maintien 10 s', options:[
-        {t:'maintenu', v:0}, {t:'descente >10 s', v:1}, {t:'descente <10 s', v:2}, {t:'chute immédiate', v:3}, {t:'aucune élévation', v:4}
+        {t:'Maintenu', v:0}, {t:'Descente >10 s', v:1}, {t:'Descente <10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '5b', label: '5b. Bras droit', desc:'Maintien 10 s', options:[
-        {t:'maintenu', v:0}, {t:'descente >10 s', v:1}, {t:'descente <10 s', v:2}, {t:'chute immédiate', v:3}, {t:'aucune élévation', v:4}
+        {t:'Maintenu', v:0}, {t:'Descente >10 s', v:1}, {t:'Descente <10 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '6a', label: '6a. Jambe gauche', desc:'Maintien 5 s', options:[
-        {t:'maintenue', v:0}, {t:'descente >5 s', v:1}, {t:'descente <5 s', v:2}, {t:'chute immédiate', v:3}, {t:'aucune élévation', v:4}
+        {t:'Maintenue', v:0}, {t:'Descente >5 s', v:1}, {t:'Descente <5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '6b', label: '6b. Jambe droite', desc:'Maintien 5 s', options:[
-        {t:'maintenue', v:0}, {t:'descente >5 s', v:1}, {t:'descente <5 s', v:2}, {t:'chute immédiate', v:3}, {t:'aucune élévation', v:4}
+        {t:'Maintenue', v:0}, {t:'Descente >5 s', v:1}, {t:'Descente <5 s', v:2}, {t:'Chute immédiate', v:3}, {t:'Aucune élévation', v:4}
       ]},
       { id: '7', label: '7. Ataxie des membres', desc:'Épreuve doigt-nez / talon-genou', options:[
-        {t:'absente', v:0}, {t:'1 membre', v:1}, {t:'2 membres', v:2}
+        {t:'Absente', v:0}, {t:'1 membre', v:1}, {t:'2 membres', v:2}
       ]},
       { id: '8', label: '8. Sensibilité', desc:'Piqûre / toucher', options:[
-        {t:'normale', v:0}, {t:'diminution légère', v:1}, {t:'perte sévère', v:2}
+        {t:'Normale', v:0}, {t:'Diminution légère', v:1}, {t:'Perte sévère', v:2}
       ]},
       { id: '9', label: '9. Langage', desc:'description objets / phrases - Aphasie', options:[
-        {t:'normale', v:0}, {t:'légère', v:1}, {t:'modérée', v:2}, {t:'sévère / mutique', v:3}
+        {t:'Normale', v:0}, {t:'Légère', v:1}, {t:'Modérée', v:2}, {t:'Sévère / mutique', v:3}
       ]},
       { id: '10', label: '10. Dysarthrie', desc:'Articulation et clareté parole - carte de mots', options:[
-        {t:'normale', v:0}, {t:'légère', v:1}, {t:'sévère', v:2}
+        {t:'Normale', v:0}, {t:'Légère', v:1}, {t:'Sévère', v:2}
       ]},
       { id: '11', label: '11. Négligeance / Extinction', desc:'toucher yeux fermés - regard nez et mouvements', options:[
-        {t:'absente', v:0}, {t:'partielle', v:1}, {t:'totale', v:2}
+        {t:'Absente', v:0}, {t:'Partielle', v:1}, {t:'Totale', v:2}
       ]}
     ];
 
@@ -239,6 +239,7 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
+
 
 
 
