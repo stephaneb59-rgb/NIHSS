@@ -195,12 +195,13 @@
     const step = imgSteps[currentIndex];
 
     // --- question 9 : objets -> scène (index 3) ---
-    if (currentIndex === 9) {
+    if (currentIndex === 13) {
       const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
       // NB: filename in repo is "scene.png" (accent). makeRobustImage handles encoding.
       const images = [
         {src: './objets.png', alt: 'objets à décrire', title: 'Objets'},
         {src: './scene.png', alt: 'scène', title: 'Scène'}
+        {src: './phrases.png', alt: 'phrases à lire', title: 'Phrases'}
       ];
       const visibleImgIndex = Math.min(step, 1);
       const img = makeRobustImage(images[visibleImgIndex].src, images[visibleImgIndex].alt);
@@ -244,11 +245,10 @@
       ctrl.className = 'control options-container' + (step < 2 ? ' hidden-options' : '');
     }
     // --- question 10 : mots -> phrases (index 4) ---
-    else if (currentIndex === 10) {
+    else if (currentIndex === 14) {
       const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
       const images = [
         {src: './mots.png', alt: 'carte de mots', title: 'Mots'},
-        {src: './phrases.png', alt: 'phrases à lire', title: 'Phrases'}
       ];
       const visibleImgIndex = Math.min(step, 1);
       const img = makeRobustImage(images[visibleImgIndex].src, images[visibleImgIndex].alt);
@@ -402,4 +402,5 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
+
 
