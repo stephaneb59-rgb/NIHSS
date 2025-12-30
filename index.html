@@ -194,55 +194,83 @@
     if (imgSteps[currentIndex] === undefined) imgSteps[currentIndex] = 0;
     const step = imgSteps[currentIndex];
 
-    // --- question 9 : objets -> scène (index 3) ---
-    if (currentIndex === 12) {
-      const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
-      // NB: filename in repo is "scene.png" (accent). makeRobustImage handles encoding.
-      const images = [
-        {src: './objets.png', alt: 'objets à décrire', title: 'Objets'},
-        {src: './scene.png', alt: 'scène', title: 'Scène'}
-      ];
-      const visibleImgIndex = Math.min(step, 1);
-      const img = makeRobustImage(images[visibleImgIndex].src, images[visibleImgIndex].alt);
-      imgWrap.appendChild(img);
+// --- question 9 : objets -> scène (index 3) ---
+if (currentIndex === 12) {
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'img-wrap';
 
-      const actions = document.createElement('div'); actions.className = 'img-actions';
-      const fullscreenBtn = document.createElement('button'); fullscreenBtn.className = 'btn'; fullscreenBtn.textContent = 'Plein écran';
-      fullscreenBtn.onclick = async () => {
-        try {
-          if (img.requestFullscreen) await img.requestFullscreen();
-          else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
-          else window.open(img.src, '_blank');
-        } catch (err) {
-          window.open(img.src, '_blank');
-        }
-      };
+  // Images du carrousel
+  const images = [
+    { src: './objets.png', alt: 'objets à décrire', title: 'Objets' },
+    { src: './scene.png',  alt: 'scène',            title: 'Scène' },
+    { src: './details.png', alt: 'détails de la scène', title: 'Détails' }
+  ];
 
-      const stepBtn = document.createElement('button'); stepBtn.className = 'btn primary';
-      stepBtn.textContent = step === 0 ? 'Scène à décrire' : 'Suivant';
-      stepBtn.onclick = () => {
-        if (imgSteps[currentIndex] === 0) {
-          imgSteps[currentIndex] = 1;
-          renderQuestion();
-        } else if (imgSteps[currentIndex] === 1) {
-          imgSteps[currentIndex] = 2;
-          renderQuestion();
-          setTimeout(() => {
-            const optContainer = document.querySelector('.control.options-container');
-            if (optContainer) optContainer.scrollIntoView({behavior:'smooth', block:'start'});
-          }, 50);
-        }
-      };
+  // Index courant du carrousel
+  let carouselIndex = imgSteps[currentIndex] || 0;
 
-      img.onclick = () => fullscreenBtn.click();
+  // Création de l'image
+  const img = makeRobustImage(
+    images[carouselIndex].src,
+    images[carouselIndex].alt
+  );
+  img.title = images[carouselIndex].title;
+  imgWrap.appendChild(img);
 
-      actions.appendChild(fullscreenBtn);
-      actions.appendChild(stepBtn);
-      imgWrap.appendChild(actions);
-      card.append(h3, sub, imgWrap);
+  // Zone des boutons
+  const actions = document.createElement('div');
+  actions.className = 'img-actions';
 
-      ctrl.className = 'control options-container' + (step < 2 ? ' hidden-options' : '');
+  // Bouton précédent
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'btn';
+  prevBtn.textContent = '◀';
+  prevBtn.onclick = () => {
+    carouselIndex = (carouselIndex - 1 + images.length) % images.length;
+    imgSteps[currentIndex] = carouselIndex;
+    renderQuestion();
+  };
+
+  // Bouton suivant
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn';
+  nextBtn.textContent = '▶';
+  nextBtn.onclick = () => {
+    carouselIndex = (carouselIndex + 1) % images.length;
+    imgSteps[currentIndex] = carouselIndex;
+    renderQuestion();
+  };
+
+  // Bouton plein écran
+  const fullscreenBtn = document.createElement('button');
+  fullscreenBtn.className = 'btn primary';
+  fullscreenBtn.textContent = 'Plein écran';
+  fullscreenBtn.onclick = async () => {
+    try {
+      if (img.requestFullscreen) await img.requestFullscreen();
+      else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+      else window.open(img.src, '_blank');
+    } catch {
+      window.open(img.src, '_blank');
     }
+  };
+
+  // Clic sur l'image = plein écran
+  img.onclick = () => fullscreenBtn.click();
+
+  // Assemblage des boutons
+  actions.appendChild(prevBtn);
+  actions.appendChild(nextBtn);
+  actions.appendChild(fullscreenBtn);
+
+  imgWrap.appendChild(actions);
+
+  // Ajout à la carte
+  card.append(h3, sub, imgWrap);
+
+  // Affichage des options (après le carrousel)
+  ctrl.className = 'control options-container';
+}
     // --- question 10 : mots -> phrases (index 4) ---
     else if (currentIndex === 13) {
       const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
@@ -401,6 +429,7 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
+
 
 
 
