@@ -193,7 +193,6 @@
     // init step for this question if absent
     if (imgSteps[currentIndex] === undefined) imgSteps[currentIndex] = 0;
     const step = imgSteps[currentIndex];
-
 // --- question 9 : objets -> scène (index 3) ---
 if (currentIndex === 12) {
   const imgWrap = document.createElement('div');
@@ -203,14 +202,64 @@ if (currentIndex === 12) {
   const images = [
     { src: './objets.png', alt: 'objets à décrire', title: 'Objets' },
     { src: './scene.png', alt: 'scène', title: 'Scène' },
-    { src: './phrases.png', alt: 'phrases', title: 'Phrases' }
+    { src: './details.png', alt: 'détails de la scène', title: 'Détails' }
   ];
 
-  // Image affichée
+  // Image affichée (par défaut la première)
   let selectedIndex = imgSteps[currentIndex] ?? 0;
 
   // Création de l'image
-  co
+  const img = makeRobustImage(
+    images[selectedIndex].src,
+    images[selectedIndex].alt
+  );
+  img.title = images[selectedIndex].title;
+  imgWrap.appendChild(img);
+
+  // Zone des boutons
+  const actions = document.createElement('div');
+  actions.className = 'img-actions';
+
+  // Boutons pour chaque image
+  images.forEach((image, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn' + (index === selectedIndex ? ' primary' : '');
+    btn.textContent = image.title;
+
+    btn.onclick = () => {
+      imgSteps[currentIndex] = index;
+      renderQuestion();
+    };
+
+    actions.appendChild(btn);
+  });
+
+  // Bouton plein écran
+  const fullscreenBtn = document.createElement('button');
+  fullscreenBtn.className = 'btn';
+  fullscreenBtn.textContent = 'Plein écran';
+  fullscreenBtn.onclick = async () => {
+    try {
+      if (img.requestFullscreen) await img.requestFullscreen();
+      else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+      else window.open(img.src, '_blank');
+    } catch {
+      window.open(img.src, '_blank');
+    }
+  };
+
+  // Clic sur l'image = plein écran
+  img.onclick = () => fullscreenBtn.click();
+
+  actions.appendChild(fullscreenBtn);
+  imgWrap.appendChild(actions);
+
+  // Ajout à la carte
+  card.append(h3, sub, imgWrap);
+
+  // Options visibles immédiatement
+  ctrl.className = 'control options-container';
+}
 
     // --- question 10 : mots -> phrases (index 4) ---
     else if (currentIndex === 13) {
@@ -370,6 +419,7 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
+
 
 
 
