@@ -199,78 +199,19 @@ if (currentIndex === 12) {
   const imgWrap = document.createElement('div');
   imgWrap.className = 'img-wrap';
 
-  // Images du carrousel
+  // Images disponibles
   const images = [
     { src: './objets.png', alt: 'objets à décrire', title: 'Objets' },
-    { src: './scene.png',  alt: 'scène',            title: 'Scène' },
+    { src: './scene.png', alt: 'scène', title: 'Scène' },
     { src: './details.png', alt: 'détails de la scène', title: 'Détails' }
   ];
 
-  // Index courant du carrousel
-  let carouselIndex = imgSteps[currentIndex] || 0;
+  // Image affichée
+  let selectedIndex = imgSteps[currentIndex] ?? 0;
 
   // Création de l'image
-  const img = makeRobustImage(
-    images[carouselIndex].src,
-    images[carouselIndex].alt
-  );
-  img.title = images[carouselIndex].title;
-  imgWrap.appendChild(img);
+  co
 
-  // Zone des boutons
-  const actions = document.createElement('div');
-  actions.className = 'img-actions';
-
-  // Bouton précédent
-  const prevBtn = document.createElement('button');
-  prevBtn.className = 'btn';
-  prevBtn.textContent = '◀';
-  prevBtn.onclick = () => {
-    carouselIndex = (carouselIndex - 1 + images.length) % images.length;
-    imgSteps[currentIndex] = carouselIndex;
-    renderQuestion();
-  };
-
-  // Bouton suivant
-  const nextBtn = document.createElement('button');
-  nextBtn.className = 'btn';
-  nextBtn.textContent = '▶';
-  nextBtn.onclick = () => {
-    carouselIndex = (carouselIndex + 1) % images.length;
-    imgSteps[currentIndex] = carouselIndex;
-    renderQuestion();
-  };
-
-  // Bouton plein écran
-  const fullscreenBtn = document.createElement('button');
-  fullscreenBtn.className = 'btn primary';
-  fullscreenBtn.textContent = 'Plein écran';
-  fullscreenBtn.onclick = async () => {
-    try {
-      if (img.requestFullscreen) await img.requestFullscreen();
-      else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
-      else window.open(img.src, '_blank');
-    } catch {
-      window.open(img.src, '_blank');
-    }
-  };
-
-  // Clic sur l'image = plein écran
-  img.onclick = () => fullscreenBtn.click();
-
-  // Assemblage des boutons
-  actions.appendChild(prevBtn);
-  actions.appendChild(nextBtn);
-  actions.appendChild(fullscreenBtn);
-
-  imgWrap.appendChild(actions);
-
-  // Ajout à la carte
-  card.append(h3, sub, imgWrap);
-
-  // Affichage des options (après le carrousel)
-  ctrl.className = 'control options-container';
-}
     // --- question 10 : mots -> phrases (index 4) ---
     else if (currentIndex === 13) {
       const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
@@ -429,6 +370,7 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
+
 
 
 
