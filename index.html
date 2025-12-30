@@ -98,7 +98,7 @@
       { id: '3', label: '3. Champs visuels', desc:'Hémianopsie latérale homonyme : HLH', options:[
         {t:'Normal', v:0}, {t:'HLH partielle', v:1}, {t:'HLH complète', v:2}, {t:'Double HLH ou cécité corticale', v:3}
       ]},
-      { id: '4', label: '4. Paralysie faciale : PF', desc:'montrer les dents, fermer les yeux, hausser les sourcils', options:[
+      { id: '4', label: '4. Paralysie faciale : PF', desc:'Montrer les dents, fermer les yeux, hausser les sourcils', options:[
         {t:'Pas d asymétrie', v:0}, {t:'Légère asymétrie : PF discrète', v:1}, {t:'PF nette', v:2}, {t:'Complète : double PF', v:3}
       ]},
       { id: '5a', label: '5a. Élevation du Mb supérieur (commencer par le coté non parétique)', desc:'Assis bras tendu à 90° - allongé bras tendu à 45° ', options:[
@@ -267,7 +267,7 @@
 
       const stepBtn = document.createElement('button'); stepBtn.className = 'btn primary';
       // première étape label demandé : "Phrases à lire"
-      stepBtn.textContent = step === 0 ? 'Phrases à lire' : 'Suivant';
+
       stepBtn.onclick = () => {
         if (imgSteps[currentIndex] === 0) {
           imgSteps[currentIndex] = 1;
@@ -401,6 +401,7 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
+
 
 
 
