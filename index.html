@@ -163,9 +163,10 @@
     const finalResult = document.getElementById('finalResult');
 
     function bandFrom(score) {
-      if (score <= 3) return { txt: 'minime', cls: 'ok' };
-      if (score <= 10) return { txt: 'modéré', cls: 'warn' };
-      return { txt: 'sévère', cls: 'bad' };
+      if (score < 5) return { txt: 'minime', cls: 'ok' };
+      if (<=5 score <= 14) return { txt: 'modéré', cls: 'warn' };
+      if (<=15 score <= 20) return { txt: 'sévère', cls: 'ok' };
+      return { txt: 'grave', cls: 'bad' };
     }
 
     function makeRobustImage(srcPath, altText) {
@@ -427,6 +428,7 @@
 
 </body>
 </html>
+
 
 
 
