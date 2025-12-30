@@ -193,20 +193,21 @@
     // init step for this question if absent
     if (imgSteps[currentIndex] === undefined) imgSteps[currentIndex] = 0;
     const step = imgSteps[currentIndex];
-// --- question 9 : objets / scène / phrases ---
+    
+// --- question 9 : objets -> scène (index 3) ---
 if (currentIndex === 12) {
   const imgWrap = document.createElement('div');
   imgWrap.className = 'img-wrap';
 
   // Images disponibles
   const images = [
-    { src: './objets.png',  alt: 'objets à décrire', title: 'Objets' },
-    { src: './scene.png',   alt: 'scène',            title: 'Scène' },
-    { src: './phrases.png', alt: 'phrases',          title: 'Phrases' }
+    { src: './objets.png', alt: 'objets à décrire', title: 'Objets' },
+    { src: './scene.png', alt: 'scène', title: 'Scène' },
+    { src: './phrases.png', alt: 'Phrases', title: 'Phrases' }
   ];
 
-  // Image affichée
-  const selectedIndex = imgSteps[currentIndex] ?? 0;
+  // Image affichée (par défaut la première)
+  let selectedIndex = imgSteps[currentIndex] ?? 0;
 
   // Création de l'image
   const img = makeRobustImage(
@@ -257,36 +258,8 @@ if (currentIndex === 12) {
   // Ajout à la carte
   card.append(h3, sub, imgWrap);
 
-  // Options visibles
+  // Options visibles immédiatement
   ctrl.className = 'control options-container';
-  /* Conteneur image + boutons */
-.img-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-/* Image centrée et adaptée à la fenêtre */
-.img-wrap img {
-  max-width: 100%;
-  max-height: 75vh;       /* s’adapte à la taille de l’écran */
-  object-fit: contain;   /* conserve les proportions */
-  display: block;
-  margin: 0 auto;
-  cursor: pointer;
-}
-
-/* Boutons centrés */
-.img-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-top: 14px;
-}
-
 }
 
     // --- question 10 : mots -> phrases (index 4) ---
@@ -447,6 +420,7 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
+
 
 
 
