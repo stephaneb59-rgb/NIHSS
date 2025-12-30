@@ -130,45 +130,203 @@
       ]}
     ];
 
-  let currentIndex=0;
-  const grid=document.getElementById('questions');
-  const finalResult=document.getElementById('finalResult');
+    let currentIndex = 0;
+  // map index -> step (0 = first image, 1 = second image, 2 = reveal options)
+  const imgSteps = {};
+  const grid = document.getElementById('questions');
+  const finalResult = document.getElementById('finalResult');
 
   function bandFrom(score){
-    if(score<=4) return {txt:'minime', cls:'ok'};
-    if(score<=15) return {txt:'modéré', cls:'warn'};
+    if(score<=3) return {txt:'minime', cls:'ok'};
+    if(score<=10) return {txt:'modéré', cls:'warn'};
     return {txt:'sévère', cls:'bad'};
   }
 
-  function renderQuestion(){
-    grid.innerHTML='';
-    finalResult.style.display='none';
-    const q=NIHSS[currentIndex];
-    const card=document.createElement('article'); card.className='card';
-    const h3=document.createElement('h3'); h3.textContent=q.label;
-    const sub=document.createElement('div'); sub.className='sub'; sub.textContent=q.desc;
-    const ctrl=document.createElement('div'); ctrl.className='control';
+  // utilitaire pour créer une <img> robuste (gère accents, ./ ou sans)
+  function makeRobustImage(srcPath, altText) {
+    const img = document.createElement('img');
+    img.loading = 'lazy';
+    img.className = 'obj-img';
+    img.alt = altText || '';
 
+    function setSrc(p) {
+      try {
+        img.src = new URL(encodeURI(p), location.href).href;
+      } catch (e) {
+        img.src = p;
+      }
+    }
+
+    setSrc(srcPath);
+
+    img.onerror = () => {
+      console.warn('Échec chargement image, tentative alternative pour :', srcPath);
+      // tenter variante sans ./ si présent
+      if (srcPath.startsWith('./')) {
+        const alt = srcPath.slice(2);
+        setSrc(alt);
+      } else {
+        setSrc('./' + srcPath);
+      }
+      // si nouvel échec, afficher message
+      img.onerror = () => {
+        console.error('Image introuvable :', srcPath);
+        const note = document.createElement('div');
+        note.className = 'img-error';
+        note.textContent = 'Image introuvable : ' + srcPath;
+        img.replaceWith(note);
+      };
+    };
+
+    return img;
+  }
+
+  function renderQuestion(){
+    grid.innerHTML = '';
+    finalResult.style.display = 'none';
+    const q = NIHSS[currentIndex];
+    const card = document.createElement('article'); card.className = 'card';
+    const h3 = document.createElement('h3'); h3.textContent = q.label;
+    const sub = document.createElement('div'); sub.className = 'sub'; sub.textContent = q.desc;
+    const ctrl = document.createElement('div'); ctrl.className = 'control';
+
+    // init step for this question if absent
+    if (imgSteps[currentIndex] === undefined) imgSteps[currentIndex] = 0;
+    const step = imgSteps[currentIndex];
+
+    // --- question 4 : objets -> scène (index 3) ---
+    if (currentIndex === 3) {
+      const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
+      // NB: filename in repo is "scene.png" (accent). makeRobustImage handles encoding.
+      const images = [
+        {src: './objets.png', alt: 'objets à décrire', title: 'Objets'},
+        {src: './scene.png', alt: 'scène', title: 'Scène'}
+      ];
+      const visibleImgIndex = Math.min(step, 1);
+      const img = makeRobustImage(images[visibleImgIndex].src, images[visibleImgIndex].alt);
+      imgWrap.appendChild(img);
+
+      const actions = document.createElement('div'); actions.className = 'img-actions';
+      const fullscreenBtn = document.createElement('button'); fullscreenBtn.className = 'btn'; fullscreenBtn.textContent = 'Plein écran';
+      fullscreenBtn.onclick = async () => {
+        try {
+          if (img.requestFullscreen) await img.requestFullscreen();
+          else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+          else window.open(img.src, '_blank');
+        } catch (err) {
+          window.open(img.src, '_blank');
+        }
+      };
+
+      const stepBtn = document.createElement('button'); stepBtn.className = 'btn primary';
+      stepBtn.textContent = step === 0 ? 'Scène à décrire' : 'Suivant';
+      stepBtn.onclick = () => {
+        if (imgSteps[currentIndex] === 0) {
+          imgSteps[currentIndex] = 1;
+          renderQuestion();
+        } else if (imgSteps[currentIndex] === 1) {
+          imgSteps[currentIndex] = 2;
+          renderQuestion();
+          setTimeout(() => {
+            const optContainer = document.querySelector('.control.options-container');
+            if (optContainer) optContainer.scrollIntoView({behavior:'smooth', block:'start'});
+          }, 50);
+        }
+      };
+
+      img.onclick = () => fullscreenBtn.click();
+
+      actions.appendChild(fullscreenBtn);
+      actions.appendChild(stepBtn);
+      imgWrap.appendChild(actions);
+      card.append(h3, sub, imgWrap);
+
+      ctrl.className = 'control options-container' + (step < 2 ? ' hidden-options' : '');
+    }
+    // --- question 5 : mots -> phrases (index 4) ---
+    else if (currentIndex === 4) {
+      const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
+      const images = [
+        {src: './mots.png', alt: 'carte de mots', title: 'Mots'},
+        {src: './phrases.png', alt: 'phrases à lire', title: 'Phrases'}
+      ];
+      const visibleImgIndex = Math.min(step, 1);
+      const img = makeRobustImage(images[visibleImgIndex].src, images[visibleImgIndex].alt);
+      imgWrap.appendChild(img);
+
+      const actions = document.createElement('div'); actions.className = 'img-actions';
+      const fullscreenBtn = document.createElement('button'); fullscreenBtn.className = 'btn'; fullscreenBtn.textContent = 'Plein écran';
+      fullscreenBtn.onclick = async () => {
+        try {
+          if (img.requestFullscreen) await img.requestFullscreen();
+          else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+          else window.open(img.src, '_blank');
+        } catch (err) {
+          window.open(img.src, '_blank');
+        }
+      };
+
+      const stepBtn = document.createElement('button'); stepBtn.className = 'btn primary';
+      // première étape label demandé : "Phrases à lire"
+      stepBtn.textContent = step === 0 ? 'Phrases à lire' : 'Suivant';
+      stepBtn.onclick = () => {
+        if (imgSteps[currentIndex] === 0) {
+          imgSteps[currentIndex] = 1;
+          renderQuestion();
+        } else if (imgSteps[currentIndex] === 1) {
+          imgSteps[currentIndex] = 2;
+          renderQuestion();
+          setTimeout(() => {
+            const optContainer = document.querySelector('.control.options-container');
+            if (optContainer) optContainer.scrollIntoView({behavior:'smooth', block:'start'});
+          }, 50);
+        }
+      };
+
+      img.onclick = () => fullscreenBtn.click();
+
+      actions.appendChild(fullscreenBtn);
+      actions.appendChild(stepBtn);
+      imgWrap.appendChild(actions);
+      card.append(h3, sub, imgWrap);
+
+      // IMPORTANT: options are cachées tant que step < 2 — donc les réponses n'apparaissent qu'après la 2ème image
+      ctrl.className = 'control options-container' + (step < 2 ? ' hidden-options' : '');
+    }
+    else {
+      card.append(h3, sub);
+      ctrl.className = 'control';
+    }
+
+    // construire les boutons de réponses (toujours ajoutés au ctrl)
     q.options.forEach(opt=>{
-      const b=document.createElement('button');
-      b.className='seg'; b.textContent=opt.t; b.setAttribute('aria-pressed','false');
-      b.onclick=()=>{ [...ctrl.children].forEach(ch=>ch.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); q.selected=opt.v; update(); };
+      const b = document.createElement('button');
+      b.className = 'seg'; b.textContent = opt.t; b.setAttribute('aria-pressed','false');
+      b.onclick = () => {
+        [...ctrl.children].forEach(ch => ch.setAttribute('aria-pressed','false'));
+        b.setAttribute('aria-pressed','true');
+        q.selected = opt.v;
+        update();
+      };
+      if (q.selected !== undefined && q.selected === opt.v) {
+        b.setAttribute('aria-pressed','true');
+      }
       ctrl.appendChild(b);
     });
 
-    card.append(h3, sub, ctrl);
+    card.append(ctrl);
 
-    const nav=document.createElement('div'); nav.className='control';
-    if(currentIndex>0){
-      const prev=document.createElement('button'); prev.className='btn'; prev.textContent='Précédent';
-      prev.onclick=()=>{currentIndex--; renderQuestion();}; nav.appendChild(prev);
+    const nav = document.createElement('div'); nav.className = 'control';
+    if (currentIndex > 0) {
+      const prev = document.createElement('button'); prev.className = 'btn'; prev.textContent = 'Précédent';
+      prev.onclick = () => { currentIndex--; renderQuestion(); }; nav.appendChild(prev);
     }
-    if(currentIndex<NIHSS.length-1){
-      const next=document.createElement('button'); next.className='btn primary'; next.textContent='Suivant';
-      next.onclick=()=>{currentIndex++; renderQuestion();}; nav.appendChild(next);
+    if (currentIndex < NIHSS.length - 1) {
+      const next = document.createElement('button'); next.className = 'btn primary'; next.textContent = 'Suivant';
+      next.onclick = () => { currentIndex++; renderQuestion(); }; nav.appendChild(next);
     } else {
-      const endBtn=document.createElement('button'); endBtn.className='btn primary'; endBtn.textContent='Fin';
-      endBtn.onclick=()=>{ showFinal(); };
+      const endBtn = document.createElement('button'); endBtn.className = 'btn primary'; endBtn.textContent = 'Fin';
+      endBtn.onclick = () => { showFinal(); };
       nav.appendChild(endBtn);
     }
     card.appendChild(nav);
@@ -179,21 +337,26 @@
   function update(){
     let score=0, filled=0;
     NIHSS.forEach(q=>{ if(q.selected!==undefined){ score+=q.selected; filled++; }});
-    document.getElementById('scoreVal').textContent=score;
-    const {txt, cls}=bandFrom(score);
-    const band=document.getElementById('band'); band.textContent=txt; band.className=`pill ${cls}`;
-    document.getElementById('chosenCount').textContent=`${filled}/${NIHSS.length} éléments renseignés`;
+    document.getElementById('scoreVal').textContent = score;
+    const {txt, cls} = bandFrom(score);
+    const band = document.getElementById('band'); band.textContent = txt; band.className = `pill ${cls}`;
+    document.getElementById('chosenCount').textContent = `${filled}/${NIHSS.length} éléments renseignés`;
   }
 
   function showFinal(){
-    let score=0; 
+    let score=0;
     NIHSS.forEach(q=>{ if(q.selected!==undefined) score+=q.selected; });
-    const {txt, cls}=bandFrom(score);
+    const {txt, cls} = bandFrom(score);
     finalResult.style.display='block';
-    finalResult.innerHTML=`Score total: ${score}<br>Gravité: <span class="${cls}">${txt}</span>`;
+    finalResult.innerHTML = `Score total: ${score}<br>Gravité: <span class="${cls}">${txt}</span>`;
   }
 
-  window.onload=()=>{NIHSS.forEach(q=>delete q.selected); currentIndex=0; renderQuestion(); update();}
+  window.onload = () => {
+    NIHSS.forEach(q => delete q.selected);
+    currentIndex = 0;
+    renderQuestion();
+    update();
+  };
 </script>
 
 <!-- Enregistrement du service worker -->
@@ -239,40 +402,3 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
