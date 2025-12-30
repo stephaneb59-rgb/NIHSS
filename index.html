@@ -194,8 +194,8 @@
     if (imgSteps[currentIndex] === undefined) imgSteps[currentIndex] = 0;
     const step = imgSteps[currentIndex];
 
-    // --- question 4 : objets -> scène (index 3) ---
-    if (currentIndex === 3) {
+    // --- question 9 : objets -> scène (index 3) ---
+    if (currentIndex === 9) {
       const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
       // NB: filename in repo is "scene.png" (accent). makeRobustImage handles encoding.
       const images = [
@@ -243,8 +243,8 @@
 
       ctrl.className = 'control options-container' + (step < 2 ? ' hidden-options' : '');
     }
-    // --- question 5 : mots -> phrases (index 4) ---
-    else if (currentIndex === 4) {
+    // --- question 10 : mots -> phrases (index 4) ---
+    else if (currentIndex === 10) {
       const imgWrap = document.createElement('div'); imgWrap.className = 'img-wrap';
       const images = [
         {src: './mots.png', alt: 'carte de mots', title: 'Mots'},
@@ -402,3 +402,4 @@ document.getElementById('installBtn').addEventListener('click', async () => {
 
 </body>
 </html>
+
