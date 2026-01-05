@@ -164,11 +164,11 @@
     const grid = document.getElementById('questions');
     const finalResult = document.getElementById('finalResult');
 
-    function bandFrom(score) {
-      if (score <5) return { txt: 'minime', cls: 'ok' };
-      if (5<score <= 14) return { txt: 'modéré', cls: 'warn' };
-      if (15<score <= 20) return { txt: 'sévère', cls: 'warn' };
-      return { txt: 'grave', cls: 'bad' };
+function bandFrom(score) {
+  if (score < 5) return { txt: 'minime', cls: 'ok' };
+  if (score >= 5 && score <= 14) return { txt: 'modéré', cls: 'warn' };
+  if (score >= 15 && score <= 20) return { txt: 'sévère', cls: 'warn' };
+  return { txt: 'grave', cls: 'bad' };
     }
 
     function makeRobustImage(srcPath, altText) {
@@ -430,6 +430,7 @@
 
 </body>
 </html>
+
 
 
 
