@@ -65,31 +65,73 @@
     .pill { font-weight:bold; }
     .ok{color:var(--ok);} .warn{color:var(--warn);} .bad{color:var(--bad);}
 
-    /* Style pour centrer et adapter les images */
-    .img-wrap {
+    /* Style pour le conteneur des images avec swipe */
+    .swipe-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      touch-action: pan-y;
+      margin: 16px 0;
+    }
+
+    .swipe-wrapper {
+      display: flex;
+      transition: transform 0.3s ease;
+      width: 100%;
+    }
+
+    .swipe-slide {
+      flex: 0 0 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      margin: 16px 0;
     }
 
-    .img-wrap img {
+    .swipe-slide img {
       max-width: 100%;
       height: auto;
-      display: block;
-      margin: 0 auto;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .img-actions {
+    .swipe-nav {
       display: flex;
-      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .swipe-nav button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .swipe-dots {
+      display: flex;
       justify-content: center;
       gap: 8px;
       margin-top: 12px;
+    }
+
+    .swipe-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ccc;
+      cursor: pointer;
+    }
+
+    .swipe-dot.active {
+      background: var(--accent);
     }
   </style>
 </head>
@@ -164,11 +206,11 @@
     const grid = document.getElementById('questions');
     const finalResult = document.getElementById('finalResult');
 
-function bandFrom(score) {
-  if (score < 5) return { txt: 'minime', cls: 'ok' };
-  if (score >= 5 && score <= 14) return { txt: 'modéré', cls: 'warn' };
-  if (score >= 15 && score <= 20) return { txt: 'sévère', cls: 'warn' };
-  return { txt: 'grave', cls: 'bad' };
+    function bandFrom(score) {
+      if (score < 5) return { txt: 'minime', cls: 'ok' };
+      if (score >= 5 && score <= 14) return { txt: 'modéré', cls: 'warn' };
+      if (score >= 15 && score <= 20) return { txt: 'sévère', cls: 'warn' };
+      return { txt: 'grave', cls: 'bad' };
     }
 
     function makeRobustImage(srcPath, altText) {
@@ -224,10 +266,13 @@ function bandFrom(score) {
       if (imgSteps[currentIndex] === undefined) imgSteps[currentIndex] = 0;
       const step = imgSteps[currentIndex];
 
-      // --- question 9 : objets -> scène (index 12) ---
-      if (currentIndex === 12) {
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'img-wrap';
+      // --- question 9 : objets -> scène (index 8) ---
+      if (currentIndex === 8) {
+        const swipeContainer = document.createElement('div');
+        swipeContainer.className = 'swipe-container';
+
+        const swipeWrapper = document.createElement('div');
+        swipeWrapper.className = 'swipe-wrapper';
 
         const images = [
           { src: './objets.png', alt: 'objets à décrire', title: 'Objets' },
@@ -235,47 +280,100 @@ function bandFrom(score) {
           { src: './phrases.png', alt: 'Phrases', title: 'Phrases' }
         ];
 
-        let selectedIndex = imgSteps[currentIndex] ?? 0;
-        const img = makeRobustImage(images[selectedIndex].src, images[selectedIndex].alt);
-        img.title = images[selectedIndex].title;
-        imgWrap.appendChild(img);
-
-        const actions = document.createElement('div');
-        actions.className = 'img-actions';
-
         images.forEach((image, index) => {
-          const btn = document.createElement('button');
-          btn.className = 'btn' + (index === selectedIndex ? ' primary' : '');
-          btn.textContent = image.title;
-          btn.onclick = () => {
-            imgSteps[currentIndex] = index;
-            renderQuestion();
-          };
-          actions.appendChild(btn);
+          const slide = document.createElement('div');
+          slide.className = 'swipe-slide';
+          const img = makeRobustImage(image.src, image.alt);
+          slide.appendChild(img);
+          swipeWrapper.appendChild(slide);
         });
 
-        const fullscreenBtn = document.createElement('button');
-        fullscreenBtn.className = 'btn';
-        fullscreenBtn.textContent = 'Plein écran';
-        fullscreenBtn.onclick = async () => {
-          try {
-            if (img.requestFullscreen) await img.requestFullscreen();
-            else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
-            else window.open(img.src, '_blank');
-          } catch {
-            window.open(img.src, '_blank');
+        swipeContainer.appendChild(swipeWrapper);
+
+        // Navigation par flèches
+        const swipeNav = document.createElement('div');
+        swipeNav.className = 'swipe-nav';
+
+        const prevBtn = document.createElement('button');
+        prevBtn.innerHTML = '‹';
+        prevBtn.onclick = () => {
+          if (imgSteps[currentIndex] > 0) {
+            imgSteps[currentIndex]--;
+            updateSwipePosition();
           }
         };
 
-        img.onclick = () => fullscreenBtn.click();
-        actions.appendChild(fullscreenBtn);
-        imgWrap.appendChild(actions);
-        card.append(h3, sub, imgWrap);
+        const nextBtn = document.createElement('button');
+        nextBtn.innerHTML = '›';
+        nextBtn.onclick = () => {
+          if (imgSteps[currentIndex] < images.length - 1) {
+            imgSteps[currentIndex]++;
+            updateSwipePosition();
+          }
+        };
 
+        swipeNav.appendChild(prevBtn);
+        swipeNav.appendChild(nextBtn);
+        swipeContainer.appendChild(swipeNav);
+
+        // Indicateurs de position
+        const swipeDots = document.createElement('div');
+        swipeDots.className = 'swipe-dots';
+
+        images.forEach((_, index) => {
+          const dot = document.createElement('div');
+          dot.className = `swipe-dot ${index === imgSteps[currentIndex] ? 'active' : ''}`;
+          dot.onclick = () => {
+            imgSteps[currentIndex] = index;
+            updateSwipePosition();
+          };
+          swipeDots.appendChild(dot);
+        });
+
+        swipeContainer.appendChild(swipeDots);
+        card.append(h3, sub, swipeContainer);
+
+        // Gestion du swipe tactile
+        let startX;
+        let isDragging = false;
+
+        swipeContainer.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX;
+          isDragging = true;
+        });
+
+        swipeContainer.addEventListener('touchmove', (e) => {
+          if (!isDragging) return;
+          const x = e.touches[0].clientX;
+          const diff = startX - x;
+          if (diff > 50 && imgSteps[currentIndex] < images.length - 1) {
+            imgSteps[currentIndex]++;
+            updateSwipePosition();
+            isDragging = false;
+          } else if (diff < -50 && imgSteps[currentIndex] > 0) {
+            imgSteps[currentIndex]--;
+            updateSwipePosition();
+            isDragging = false;
+          }
+        });
+
+        swipeContainer.addEventListener('touchend', () => {
+          isDragging = false;
+        });
+
+        function updateSwipePosition() {
+          swipeWrapper.style.transform = `translateX(-${imgSteps[currentIndex] * 100}%)`;
+          const dots = swipeDots.querySelectorAll('.swipe-dot');
+          dots.forEach((dot, index) => {
+            dot.className = `swipe-dot ${index === imgSteps[currentIndex] ? 'active' : ''}`;
+          });
+        }
+
+        updateSwipePosition();
         ctrl.className = 'control options-container';
       }
-      // --- question 10 : mots (index 13) ---
-      else if (currentIndex === 13) {
+      // --- question 10 : mots (index 9) ---
+      else if (currentIndex === 9) {
         const imgWrap = document.createElement('div');
         imgWrap.className = 'img-wrap';
 
@@ -285,26 +383,6 @@ function bandFrom(score) {
 
         const img = makeRobustImage(images[0].src, images[0].alt);
         imgWrap.appendChild(img);
-
-        const actions = document.createElement('div');
-        actions.className = 'img-actions';
-
-        const fullscreenBtn = document.createElement('button');
-        fullscreenBtn.className = 'btn';
-        fullscreenBtn.textContent = 'Plein écran';
-        fullscreenBtn.onclick = async () => {
-          try {
-            if (img.requestFullscreen) await img.requestFullscreen();
-            else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
-            else window.open(img.src, '_blank');
-          } catch {
-            window.open(img.src, '_blank');
-          }
-        };
-
-        img.onclick = () => fullscreenBtn.click();
-        actions.appendChild(fullscreenBtn);
-        imgWrap.appendChild(actions);
         card.append(h3, sub, imgWrap);
 
         ctrl.className = 'control options-container';
@@ -387,6 +465,9 @@ function bandFrom(score) {
     };
   </script>
 
+  <!-- Ancre en haut de page -->
+  <a id="haut-de-page"></a>
+
   <!-- Enregistrement du service worker -->
   <script>
     if ("serviceWorker" in navigator) {
@@ -427,7 +508,6 @@ function bandFrom(score) {
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
   </style>
-
 </body>
 </html>
 
