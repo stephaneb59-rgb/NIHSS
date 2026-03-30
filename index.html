@@ -91,6 +91,32 @@
       gap: 8px;
       margin-top: 12px;
     }
+
+    /* Adaptation spécifique pour la section 9 */
+    @media (max-width: 768px) {
+      #section9 .img-wrap {
+        flex-direction: column;
+      }
+      #section9 img {
+        max-height: 200px;
+        object-fit: contain;
+      }
+      #section9 .img-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      #section9 .bouton-retour {
+        display: block;
+        width: 100%;
+        margin: 8px 0;
+        padding: 10px;
+        text-align: center;
+        background: var(--accent);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -164,11 +190,11 @@
     const grid = document.getElementById('questions');
     const finalResult = document.getElementById('finalResult');
 
-function bandFrom(score) {
-  if (score < 5) return { txt: 'minime', cls: 'ok' };
-  if (score >= 5 && score <= 14) return { txt: 'modéré', cls: 'warn' };
-  if (score >= 15 && score <= 20) return { txt: 'sévère', cls: 'warn' };
-  return { txt: 'grave', cls: 'bad' };
+    function bandFrom(score) {
+      if (score < 5) return { txt: 'minime', cls: 'ok' };
+      if (score >= 5 && score <= 14) return { txt: 'modéré', cls: 'warn' };
+      if (score >= 15 && score <= 20) return { txt: 'sévère', cls: 'warn' };
+      return { txt: 'grave', cls: 'bad' };
     }
 
     function makeRobustImage(srcPath, altText) {
@@ -224,8 +250,8 @@ function bandFrom(score) {
       if (imgSteps[currentIndex] === undefined) imgSteps[currentIndex] = 0;
       const step = imgSteps[currentIndex];
 
-      // --- question 9 : objets -> scène (index 12) ---
-      if (currentIndex === 12) {
+      // --- question 9 : objets -> scène (index 8) ---
+      if (currentIndex === 8) {
         const imgWrap = document.createElement('div');
         imgWrap.className = 'img-wrap';
 
@@ -239,6 +265,13 @@ function bandFrom(score) {
         const img = makeRobustImage(images[selectedIndex].src, images[selectedIndex].alt);
         img.title = images[selectedIndex].title;
         imgWrap.appendChild(img);
+
+        // Ajout du bouton "Retour en haut"
+        const retourBtn = document.createElement('a');
+        retourBtn.href = '#haut-de-page';
+        retourBtn.className = 'bouton-retour';
+        retourBtn.textContent = 'Retour en haut';
+        imgWrap.appendChild(retourBtn);
 
         const actions = document.createElement('div');
         actions.className = 'img-actions';
@@ -274,8 +307,8 @@ function bandFrom(score) {
 
         ctrl.className = 'control options-container';
       }
-      // --- question 10 : mots (index 13) ---
-      else if (currentIndex === 13) {
+      // --- question 10 : mots (index 9) ---
+      else if (currentIndex === 9) {
         const imgWrap = document.createElement('div');
         imgWrap.className = 'img-wrap';
 
@@ -285,6 +318,13 @@ function bandFrom(score) {
 
         const img = makeRobustImage(images[0].src, images[0].alt);
         imgWrap.appendChild(img);
+
+        // Ajout du bouton "Retour en haut"
+        const retourBtn = document.createElement('a');
+        retourBtn.href = '#haut-de-page';
+        retourBtn.className = 'bouton-retour';
+        retourBtn.textContent = 'Retour en haut';
+        imgWrap.appendChild(retourBtn);
 
         const actions = document.createElement('div');
         actions.className = 'img-actions';
@@ -387,6 +427,9 @@ function bandFrom(score) {
     };
   </script>
 
+  <!-- Ancre en haut de page -->
+  <a id="haut-de-page"></a>
+
   <!-- Enregistrement du service worker -->
   <script>
     if ("serviceWorker" in navigator) {
@@ -427,10 +470,8 @@ function bandFrom(score) {
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
   </style>
-
 </body>
 </html>
-
 
 
 
