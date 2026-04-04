@@ -225,7 +225,7 @@ function bandFrom(score) {
       const step = imgSteps[currentIndex];
 
       // --- question 9 : objets -> scène (index 12) ---
-     if (currentIndex === 12) {
+if (currentIndex === 12) {
   const imgWrap = document.createElement('div');
   imgWrap.className = 'img-wrap';
 
@@ -259,31 +259,8 @@ function bandFrom(score) {
 
   ctrl.className = 'control options-container';
 }
-          actions.appendChild(btn);
-        });
-
-        const fullscreenBtn = document.createElement('button');
-        fullscreenBtn.className = 'btn';
-        fullscreenBtn.textContent = 'Plein écran';
-        fullscreenBtn.onclick = async () => {
-          try {
-            if (img.requestFullscreen) await img.requestFullscreen();
-            else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
-            else window.open(img.src, '_blank');
-          } catch {
-            window.open(img.src, '_blank');
-          }
-        };
-
-        img.onclick = () => fullscreenBtn.click();
-        actions.appendChild(fullscreenBtn);
-        imgWrap.appendChild(actions);
-        card.append(h3, sub, imgWrap);
-
-        ctrl.className = 'control options-container';
-      }
       // --- question 10 : mots (index 13) ---
- if (currentIndex === 13) {
+if (currentIndex === 13) {
   const imgWrap = document.createElement('div');
   imgWrap.className = 'img-wrap';
 
@@ -295,14 +272,6 @@ function bandFrom(score) {
 
   ctrl.className = 'control options-container';
 }
-
-        img.onclick = () => fullscreenBtn.click();
-        actions.appendChild(fullscreenBtn);
-        imgWrap.appendChild(actions);
-        card.append(h3, sub, imgWrap);
-
-        ctrl.className = 'control options-container';
-      }
       else {
         card.append(h3, sub);
         ctrl.className = 'control';
