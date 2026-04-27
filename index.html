@@ -225,53 +225,90 @@ function bandFrom(score) {
       const step = imgSteps[currentIndex];
 
       // --- question 9 : objets -> scène (index 12) ---
-if (currentIndex === 12) {
-  const imgWrap = document.createElement('div');
-  imgWrap.className = 'img-wrap';
+      if (currentIndex === 12) {
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'img-wrap';
 
-  const images = [
-    { src: './objets.png', alt: 'objets à décrire', title: 'Objets' },
-    { src: './scene.png', alt: 'scène', title: 'Scène' },
-    { src: './phrases.png', alt: 'Phrases', title: 'Phrases' }
-  ];
+        const images = [
+          { src: './objets.png', alt: 'objets à décrire', title: 'Objets' },
+          { src: './scene.png', alt: 'scène', title: 'Scène' },
+          { src: './phrases.png', alt: 'Phrases', title: 'Phrases' }
+        ];
 
-  let selectedIndex = imgSteps[currentIndex] ?? 0;
-  const img = makeRobustImage(images[selectedIndex].src, images[selectedIndex].alt);
-  img.title = images[selectedIndex].title;
-  imgWrap.appendChild(img);
+        let selectedIndex = imgSteps[currentIndex] ?? 0;
+        const img = makeRobustImage(images[selectedIndex].src, images[selectedIndex].alt);
+        img.title = images[selectedIndex].title;
+        imgWrap.appendChild(img);
 
-  const actions = document.createElement('div');
-  actions.className = 'img-actions';
+        const actions = document.createElement('div');
+        actions.className = 'img-actions';
 
-  images.forEach((image, index) => {
-    const btn = document.createElement('button');
-    btn.className = 'btn' + (index === selectedIndex ? ' primary' : '');
-    btn.textContent = image.title;
-    btn.onclick = () => {
-      imgSteps[currentIndex] = index;
-      renderQuestion();
-    };
-    actions.appendChild(btn);
-  });
+        images.forEach((image, index) => {
+          const btn = document.createElement('button');
+          btn.className = 'btn' + (index === selectedIndex ? ' primary' : '');
+          btn.textContent = image.title;
+          btn.onclick = () => {
+            imgSteps[currentIndex] = index;
+            renderQuestion();
+          };
+          actions.appendChild(btn);
+        });
 
-  imgWrap.appendChild(actions);
-  card.append(h3, sub, imgWrap);
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'btn';
+        fullscreenBtn.textContent = 'Plein écran';
+        fullscreenBtn.onclick = async () => {
+          try {
+            if (img.requestFullscreen) await img.requestFullscreen();
+            else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+            else window.open(img.src, '_blank');
+          } catch {
+            window.open(img.src, '_blank');
+          }
+        };
 
-  ctrl.className = 'control options-container';
-}
+        img.onclick = () => fullscreenBtn.click();
+        actions.appendChild(fullscreenBtn);
+        imgWrap.appendChild(actions);
+        card.append(h3, sub, imgWrap);
+
+        ctrl.className = 'control options-container';
+      }
       // --- question 10 : mots (index 13) ---
-if (currentIndex === 13) {
-  const imgWrap = document.createElement('div');
-  imgWrap.className = 'img-wrap';
+      else if (currentIndex === 13) {
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'img-wrap';
 
-  const img = makeRobustImage('./mots.png', 'carte de mots');
-  imgWrap.appendChild(img);
+        const images = [
+          { src: './mots.png', alt: 'carte de mots', title: 'Mots' },
+        ];
 
-  // plus de bouton plein écran
-  card.append(h3, sub, imgWrap);
+        const img = makeRobustImage(images[0].src, images[0].alt);
+        imgWrap.appendChild(img);
 
-  ctrl.className = 'control options-container';
-}
+        const actions = document.createElement('div');
+        actions.className = 'img-actions';
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'btn';
+        fullscreenBtn.textContent = 'Plein écran';
+        fullscreenBtn.onclick = async () => {
+          try {
+            if (img.requestFullscreen) await img.requestFullscreen();
+            else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+            else window.open(img.src, '_blank');
+          } catch {
+            window.open(img.src, '_blank');
+          }
+        };
+
+        img.onclick = () => fullscreenBtn.click();
+        actions.appendChild(fullscreenBtn);
+        imgWrap.appendChild(actions);
+        card.append(h3, sub, imgWrap);
+
+        ctrl.className = 'control options-container';
+      }
       else {
         card.append(h3, sub);
         ctrl.className = 'control';
@@ -393,5 +430,6 @@ if (currentIndex === 13) {
 
 </body>
 </html>
+
 
 
