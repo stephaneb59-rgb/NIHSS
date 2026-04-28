@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -110,109 +111,103 @@
 </div>
 
 <script>
-const NIHSS = [/* inchangé */];
+  const NIHSS = [
+    { id: '1a', label: '1a. Niveau de conscience : 0 à 3 points', desc:'Éveil global', options:[
+      {t:'0 : Vigilant', v:0}, {t:'1 : Répond aux stimulations simples', v:1}, {t:'2 : Réponse motrice non stéréotypée à la douleur', v:2}, {t:'3 : Coma', v:3}
+    ]},
+    { id: '1b', label: '1b. Réponses à 2 questions simples : 0 à 2 points', desc:'Questions : âge / mois', options:[
+      {t:'0 : deux bonnes réponses', v:0}, {t:'1 : une bonne réponse ou dysarthrie sévère ', v:1}, {t:'2 : aucune bonne réponse ou aphasie', v:2}
+    ]},
+    { id: '1c', label: '1c. Réponses à 2 tâches simples : 0 à 2 points', desc:'Ouvrir et fermer les yeux / serrer et relacher la main', options:[
+      {t:'0 : deux bonnes réponses', v:0}, {t:'1 : une bonne réponse', v:1}, {t:'2 : aucune bonne réponse', v:2}
+    ]},
+    { id: '2', label: '2. Occulomotricité : 0 à 2 points', desc:'Paires crâniennes III, IV, VI', options:[
+      {t:'0 : Normale', v:0}, {t:'1 : Paralysie de la latéralité partielle ou diplopie', v:1}, {t:'2 : Paralysie de la latéralité complète', v:2}
+    ]},
+    { id: '3', label: '3. Champs visuels : 0 à 3 points', desc:'Hémianopsie latérale homonyme : HLH', options:[
+      {t:'0: Normal', v:0}, {t:'1 : HLH partielle', v:1}, {t:'2 : HLH complète', v:2}, {t:'3 : Double HLH ou cécité corticale', v:3}
+    ]},
+    { id: '4', label: '4. Paralysie faciale = PF : 0 à 3 points', desc:'Montrer les dents, fermer les yeux, hausser les sourcils', options:[
+      {t:'0 : Pas d asymétrie', v:0}, {t:'1 : Légère asymétrie = PF discrète', v:1}, {t:'2 : PF nette', v:2}, {t:'3 : Diplégie faciale = PF bilatérale', v:3}
+    ]},
+    { id: '5a', label: '5a. Élevation Mb supérieur droit : 0 à 4 points', desc:'Assis bras tendu à 90° - allongé bras tendu à 45° : Maintien 10s ', options:[
+      {t:'0 : Maintenu 10s', v:0}, {t:'1 : Résiste à la pesanteur', v:1}, {t:'2 : Ne résite pas à la pesanteur', v:2}, {t:'3 : Ne lève pas', v:3}, {t:'4 : Aucun mouvement', v:4}
+    ]},
+    { id: '5b', label: '5b. Elévation Mb supérieur gauche : 0 à 4 points', desc:'Assis bras tendu à 90° - allongé bras tendu à 45° : Maintien 10s', options:[
+      {t:'0 : Maintenu 10s', v:0}, {t:'1 : Résiste à la pesanteur', v:1}, {t:'2 : Ne résite pas à la pesanteur', v:2}, {t:'3 : Ne lève pas', v:3}, {t:'4 : Aucun mouvement', v:4}
+    ]},
+    { id: '6a', label: '6a. Élevation Mb inférieur droit : 0 à 4 points', desc:'Allongé jambe tendue à 30° : Maintien 5s', options:[
+      {t:'0 : Maintenu 5s', v:0}, {t:'1 : Résiste à la pesanteur', v:1}, {t:'2 : Ne résite pas à la pesanteur', v:2}, {t:'3 : Ne lève pas', v:3}, {t:'4 : Aucun mouvement', v:4}
+    ]},
+    { id: '6b', label: '6b. Elévation Mb inférieur gauche : 0 à 4 points', desc:'Allongé jambe tendue à 30° : Maintien 5s', options:[
+      {t:'0 : Maintenu 5s', v:0}, {t:'1 : Résiste à la pesanteur', v:1}, {t:'2 : Ne résite pas à la pesanteur', v:2}, {t:'3 : Ne lève pas', v:3}, {t:'4 : Aucun mouvement', v:4}
+    ]},
+    { id: '7', label: '7. Ataxie des membres', desc:'doigt-nez / talon-genou', options:[
+      {t:'0 : Absent', v:0}, {t:'1 : 1 membre', v:1}, {t:'2 : 2 membres', v:2}
+    ]},
+    { id: '8', label: '8. Sensibilité', desc:'piqûre / toucher', options:[
+      {t:'0 : Normal', v:0}, {t:'1 : Hypo', v:1}, {t:'2 : Anesthésie', v:2}
+    ]},
+    { id: '9', label: '9. Langage', desc:'Objets / scène / phrases', options:[
+      {t:'0 : Normal', v:0}, {t:'1 : Léger', v:1}, {t:'2 : Sévère', v:2}, {t:'3 : Mutique', v:3}
+    ]},
+    { id: '10', label: '10. Dysarthrie', desc:'Mots', options:[
+      {t:'0 : Normal', v:0}, {t:'1 : Modérée', v:1}, {t:'2 : Sévère', v:2}
+    ]}
+  ];
 
-let currentIndex = 0;
-const imgSteps = {};
-const grid = document.getElementById('questions');
-const finalResult = document.getElementById('finalResult');
+  let currentIndex = 0;
+  const grid = document.getElementById('questions');
 
-function makeRobustImage(srcPath, altText) {
-  const img = document.createElement('img');
-  img.loading = 'lazy';
-  img.alt = altText || '';
+  function renderQuestion() {
+    grid.innerHTML = '';
+    const q = NIHSS[currentIndex];
+    const card = document.createElement('div');
+    card.className = 'card';
 
-  try {
-    img.src = new URL(encodeURI(srcPath), location.href).href;
-  } catch {
-    img.src = srcPath;
-  }
+    const h3 = document.createElement('h3');
+    h3.textContent = q.label;
 
-  return img;
-}
+    const sub = document.createElement('div');
+    sub.className = 'sub';
+    sub.textContent = q.desc;
 
-function renderQuestion() {
-  grid.innerHTML = '';
-  finalResult.style.display = 'none';
-  const q = NIHSS[currentIndex];
+    card.append(h3, sub);
 
-  const card = document.createElement('article');
-  card.className = 'card';
+    // Images SANS plein écran
+    if (currentIndex === 12) {
+      const img = document.createElement('img');
+      img.src = './objets.png';
+      card.appendChild(img);
+    }
 
-  const h3 = document.createElement('h3');
-  h3.textContent = q.label;
+    if (currentIndex === 13) {
+      const img = document.createElement('img');
+      img.src = './mots.png';
+      card.appendChild(img);
+    }
 
-  const sub = document.createElement('div');
-  sub.className = 'sub';
-  sub.textContent = q.desc;
+    const ctrl = document.createElement('div');
+    ctrl.className = 'control';
 
-  const ctrl = document.createElement('div');
-
-  // ITEM 9
-  if (currentIndex === 12) {
-    const imgWrap = document.createElement('div');
-    imgWrap.className = 'img-wrap';
-
-    const images = [
-      { src: './objets.png', alt: 'objets' },
-      { src: './scene.png', alt: 'scène' },
-      { src: './phrases.png', alt: 'phrases' }
-    ];
-
-    let selectedIndex = imgSteps[currentIndex] ?? 0;
-    const img = makeRobustImage(images[selectedIndex].src, images[selectedIndex].alt);
-    imgWrap.appendChild(img);
-
-    const actions = document.createElement('div');
-    actions.className = 'img-actions';
-
-    images.forEach((image, index) => {
-      const btn = document.createElement('button');
-      btn.className = 'btn';
-      btn.textContent = image.alt;
-      btn.onclick = () => {
-        imgSteps[currentIndex] = index;
-        renderQuestion();
+    q.options.forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'seg';
+      b.textContent = opt.t;
+      b.onclick = () => {
+        q.selected = opt.v;
       };
-      actions.appendChild(btn);
+      ctrl.appendChild(b);
     });
 
-    imgWrap.appendChild(actions);
-    card.append(h3, sub, imgWrap);
+    card.appendChild(ctrl);
+    grid.appendChild(card);
   }
 
-  // ITEM 10
-  else if (currentIndex === 13) {
-    const imgWrap = document.createElement('div');
-    imgWrap.className = 'img-wrap';
-
-    const img = makeRobustImage('./mots.png', 'mots');
-    imgWrap.appendChild(img);
-
-    card.append(h3, sub, imgWrap);
-  }
-
-  else {
-    card.append(h3, sub);
-  }
-
-  ctrl.className = 'control';
-
-  q.options.forEach(opt => {
-    const b = document.createElement('button');
-    b.className = 'seg';
-    b.textContent = opt.t;
-    b.onclick = () => {
-      q.selected = opt.v;
-      update();
-    };
-    ctrl.appendChild(b);
-  });
-
-  card.append(ctrl);
-  grid.appendChild(card);
-}
+  renderQuestion();
 </script>
 
 </body>
 </html>
+```
+
