@@ -253,22 +253,6 @@ function bandFrom(score) {
           };
           actions.appendChild(btn);
         });
-
-        const fullscreenBtn = document.createElement('button');
-        fullscreenBtn.className = 'btn';
-        fullscreenBtn.textContent = 'Plein écran';
-        fullscreenBtn.onclick = async () => {
-          try {
-            if (img.requestFullscreen) await img.requestFullscreen();
-            else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
-            else window.open(img.src, '_blank');
-          } catch {
-            window.open(img.src, '_blank');
-          }
-        };
-
-        img.onclick = () => fullscreenBtn.click();
-        actions.appendChild(fullscreenBtn);
         imgWrap.appendChild(actions);
         card.append(h3, sub, imgWrap);
 
@@ -288,22 +272,6 @@ function bandFrom(score) {
 
         const actions = document.createElement('div');
         actions.className = 'img-actions';
-
-        const fullscreenBtn = document.createElement('button');
-        fullscreenBtn.className = 'btn';
-        fullscreenBtn.textContent = 'Plein écran';
-        fullscreenBtn.onclick = async () => {
-          try {
-            if (img.requestFullscreen) await img.requestFullscreen();
-            else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
-            else window.open(img.src, '_blank');
-          } catch {
-            window.open(img.src, '_blank');
-          }
-        };
-
-        img.onclick = () => fullscreenBtn.click();
-        actions.appendChild(fullscreenBtn);
         imgWrap.appendChild(actions);
         card.append(h3, sub, imgWrap);
 
